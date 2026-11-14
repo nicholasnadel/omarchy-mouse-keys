@@ -1,0 +1,13 @@
+[Unit]
+Description=Keyboard mouse keys through Kanata
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/kanata --cfg %h/.config/kanata/mouse-keys.kbd --no-wait
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=graphical-session.target

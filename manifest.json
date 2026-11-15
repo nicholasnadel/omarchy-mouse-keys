@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.nicholasnadel.mouse-keys",
+  "name": "Mouse Keys",
+  "version": "0.2.0",
+  "author": "Nick",
+  "license": "MIT",
+  "description": "Bar status, controls, and shortcut guide for Kanata mouse keys. Keyboard setup is an explicit install step.",
+  "kinds": ["bar-widget"],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Mouse Keys",
+    "description": "View or toggle the installed mouse-key service",
+    "category": "System",
+    "aliases": ["mouse", "pointer", "keyboard", "kanata"],
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}

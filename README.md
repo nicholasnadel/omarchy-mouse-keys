@@ -1,8 +1,9 @@
 # Mouse keys for Omarchy
 
 Use a keyboard to move, scroll, and click the pointer on Omarchy/Hyprland.
-This project uses [Kanata](https://github.com/jtroo/kanata) for the input layer.
-It is a standalone keyboard service, not an Omarchy shell plugin.
+The Omarchy bar widget shows status, a shortcut guide, and a start/stop button.
+[Kanata](https://github.com/jtroo/kanata) handles the keyboard input below the
+desktop shell. Adding the widget never installs or starts Kanata automatically.
 
 **Status:** Experimental. The Kanata configuration and installer have been
 validated on an ARM64 Omarchy MacBook, and Kanata's simulated input confirmed
@@ -31,24 +32,30 @@ behavior; Kanata uses different units.
 
 ## Install
 
-This installer targets an Omarchy desktop with systemd, udev, Polkit or sudo,
+Install and enable the Omarchy widget:
+
+```sh
+omarchy plugin add https://github.com/nicholasnadel/omarchy-mouse-keys.git --enable
+```
+
+The widget initially says **Setup needed**. Run its setup command from the
+installed plugin folder, or use the same commands from a local clone:
+
+```sh
+cd ~/.config/omarchy/plugins/io.github.nicholasnadel.mouse-keys
+python3 install.py --list
+python3 install.py --device "Apple SPI Keyboard"
+```
+
+Choose your keyboard's exact name from `--list`; the name above is an example.
+Repeat `--device` to include more than one keyboard. Once the service is
+installed, the widget can stop or start it without elevated privileges.
+
+The installer targets an Omarchy desktop with systemd, udev, Polkit or sudo,
 Python 3, `git`, `rust` (`/usr/bin/cargo` and `/usr/bin/rustc`), and `setfacl`
 (Arch package `acl`). It builds Kanata 1.12.0 from a pinned source commit if
 that version is not already at `~/.local/bin/kanata`. The build uses
 `--no-default-features`, which omits Kanata's command action.
-
-List connected keyboards:
-
-```sh
-python3 install.py --list
-```
-
-Choose the exact name from that output. Repeat `--device` to include more than
-one keyboard:
-
-```sh
-python3 install.py --device "Apple SPI Keyboard"
-```
 
 To inspect the generated Kanata configuration and udev rule first, add
 `--preview /tmp/mouse-keys-preview`. Preview mode does not install or change
@@ -85,6 +92,15 @@ To remove the installed files after disabling the service, review and delete
 `sudo udevadm control --reload-rules` and
 `systemctl --user daemon-reload`. The compiled Kanata binary can remain if
 another configuration uses it.
+
+Then remove the bar widget with:
+
+```sh
+omarchy plugin remove io.github.nicholasnadel.mouse-keys
+```
+
+Removing the widget alone leaves the Kanata service and keyboard permissions
+in place. Stop the service first if you no longer want the keyboard mapping.
 
 ## Scope
 

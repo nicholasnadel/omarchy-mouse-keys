@@ -54,7 +54,7 @@ BarWidget {
   PanelController { id: panelController }
 
   Timer {
-    interval: 5000
+    interval: root.opened ? 500 : 5000
     running: true
     repeat: true
     onTriggered: root.refreshStatus()
@@ -88,7 +88,7 @@ BarWidget {
     text: "MK"
     foreground: root.serviceActive ? Color.accent : root.foreground
     tooltipText: root.serviceLoaded
-      ? (root.serviceActive ? "Mouse keys active" : "Mouse keys stopped")
+      ? (root.serviceActive ? "Mouse keys enabled" : "Mouse keys disabled")
       : "Mouse keys setup needed"
     onPressed: root.toggle()
   }
@@ -127,7 +127,7 @@ BarWidget {
         Text {
           width: parent.width
           text: root.serviceLoaded
-            ? (root.serviceActive ? "Active" : "Stopped")
+            ? (root.serviceActive ? "Enabled" : "Disabled")
             : "Setup needed"
           textFormat: Text.PlainText
           color: root.serviceActive ? Color.accent : Color.muted
@@ -137,8 +137,8 @@ BarWidget {
 
         Text {
           width: parent.width
-          text: "Hold Right Command/Super, tap M; or hold D and press a mouse key. "
-              + "H/J/K/L move · V/B/N click · hold S to scroll."
+          text: "Hold D briefly for mouse keys; release it to type. "
+              + "H/J/K/L move · V/B/N click · S scroll · F faster · G slower."
           textFormat: Text.PlainText
           wrapMode: Text.WordWrap
           color: root.foreground
@@ -148,7 +148,7 @@ BarWidget {
 
         Button {
           text: root.serviceLoaded
-            ? (root.serviceActive ? "Stop mouse keys" : "Start mouse keys")
+            ? (root.serviceActive ? "Disable mouse keys" : "Enable mouse keys")
             : "Open setup guide"
           foreground: root.foreground
           bordered: true

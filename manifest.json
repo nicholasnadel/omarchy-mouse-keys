@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "io.github.nicholasnadel.mouse-keys",
   "name": "Mouse Keys",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": "Nick",
   "license": "MIT",
   "description": "Bar status, controls, and shortcut guide for Kanata mouse keys. Keyboard setup is an explicit install step.",

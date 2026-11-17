@@ -1,5 +1,5 @@
 ;; Generated device list is filled in by install.py.
-;; Right Meta + M and D-chord mouse keys for Kanata 1.12.0.
+;; Hold D briefly for pointer actions; release it to type normally.
 (defcfg
   process-unmapped-keys no
   linux-dev-names-include (
@@ -14,25 +14,8 @@
   spc tab ret bspc esc lsft rsft lctl rctl lalt ralt
 )
 
-(defvirtualkeys full (layer-while-held full))
-
 (defalias
-  ;; Right Command stays a normal Command key. M latches the mouse layer
-  ;; until Right Command is released.
-  command-mouse (multi rmet (layer-while-held command-start)
-                       (on-release release-vkey full))
-  ;; Drop Command before generating pointer events. Hyprland may use
-  ;; Super+left-drag to move windows.
-  start-full (multi (release-key rmet) (on-press press-vkey full))
-
-  ;; D + one of the mouse keys activates the mode immediately. Other common
-  ;; keys resolve D as a letter, so ordinary D-led typing stays available.
-  d-mouse (tap-hold-keys 0 60000 d (layer-while-held dmouse)
-    (hold-on-press h j k l v b n s f g)
-    (tap-on-press a c d e i m o p q r t u w x y z
-                  1 2 3 4 5 6 7 8 9 0
-                  spc tab ret bspc esc lsft rsft lctl rctl lalt ralt rmet))
-
+  d-mouse (tap-hold 250 250 d (layer-while-held dmouse))
   left  (movemouse-accel-left 10 350 1 13)
   down  (movemouse-accel-down 10 350 1 13)
   up    (movemouse-accel-up 10 350 1 13)
@@ -44,43 +27,21 @@
 )
 
 (deflayer base
-  @command-mouse @d-mouse _ _ _ _ _ _ _ _ _ _ _
-  _ _ _ _ _ _ _ _ _ _ _ _ _ _
-  _ _ _ _ _ _ _ _ _ _
-  _ _ _ _ _ _ _ _ _ _ _
-)
-
-(deflayer command-start
-  _ d @start-full _ _ _ _ _ _ _ _ _ _
-  _ _ _ _ _ _ _ _ _ _ _ _ _ _
-  _ _ _ _ _ _ _ _ _ _
-  _ _ _ _ _ _ _ _ _ _ _
-)
-
-(deflayer full
-  _ (movemouse-speed 100) XX @left @down @up @right mlft mrgt mmid
-  (layer-while-held full-scroll) (movemouse-speed 200) _
-  _ _ _ _ _ _ _ _ _ _ _ _ _ _
-  _ _ _ _ _ _ _ _ _ _
-  _ _ _ _ _ _ _ _ _ _ _
-)
-
-(deflayer full-scroll
-  _ _ _ @scroll-left @scroll-down @scroll-up @scroll-right _ _ _ _ _ _
+  _ @d-mouse _ _ _ _ _ _ _ _ _ _ _
   _ _ _ _ _ _ _ _ _ _ _ _ _ _
   _ _ _ _ _ _ _ _ _ _
   _ _ _ _ _ _ _ _ _ _ _
 )
 
 (deflayer dmouse
-  _ _ _ @left @down @up @right mlft mrgt mmid
-  (layer-while-held dmouse-scroll) (movemouse-speed 380) (movemouse-speed 50)
+  _ XX _ @left @down @up @right mlft mrgt mmid
+  (layer-while-held mouse-scroll) (movemouse-speed 380) (movemouse-speed 50)
   _ _ _ _ _ _ _ _ _ _ _ _ _ _
   _ _ _ _ _ _ _ _ _ _
   _ _ _ _ _ _ _ _ _ _ _
 )
 
-(deflayer dmouse-scroll
+(deflayer mouse-scroll
   _ _ _ @scroll-left @scroll-down @scroll-up @scroll-right _ _ _ _ _ _
   _ _ _ _ _ _ _ _ _ _ _ _ _ _
   _ _ _ _ _ _ _ _ _ _

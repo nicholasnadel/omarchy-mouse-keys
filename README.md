@@ -1,34 +1,31 @@
 # Mouse keys for Omarchy
 
 Use a keyboard to move, scroll, and click the pointer on Omarchy/Hyprland.
-The Omarchy bar widget shows status, a shortcut guide, and a start/stop button.
+The Omarchy bar widget shows service status, a shortcut guide, and a start/stop button.
 [Kanata](https://github.com/jtroo/kanata) handles the keyboard input below the
 desktop shell. Adding the widget never installs or starts Kanata automatically.
 
 **Status:** Experimental. The Kanata configuration and installer have been
-validated on an ARM64 Omarchy MacBook, and Kanata's simulated input confirmed
-the main key sequences. Physical-key behavior and other keyboard models still
-need testing.
+validated on an ARM64 Omarchy MacBook. Holding D for pointer movement worked
+on its Apple keyboard; typing and speed sequences passed Kanata's simulator.
+Other keyboard models still need testing.
 
 ## Keys
 
 | Keys | Action |
 | --- | --- |
-| Hold Right Command/Super, tap M | Enter mouse mode until Right Command/Super is released |
-| Hold D, press a mouse key | Enter D mouse mode until D is released |
-| H / J / K / L | Move left / down / up / right |
-| V / B / N | Hold left / right / middle mouse button |
-| Hold S + H/J/K/L | Scroll left / down / up / right |
-| F | Move faster (2× in Command mode, 3.8× in D mode) |
-| G in D mode | Move slower (0.5×) |
+| Hold D for 250 ms | Temporarily enter mouse mode |
+| D + H/J/K/L | Move left / down / up / right |
+| D + V/B/N | Hold left / right / middle mouse button |
+| D + S + H/J/K/L | Scroll left / down / up / right |
+| Hold D + F / G | Move faster (3.8×) / slower (0.5×) |
 
-Right Command/Super works normally until M is pressed. Mouse mode then releases
-the modifier so Hyprland does not treat a mouse click as a Super-drag. D remains
-a normal letter when typed alone or followed by the common non-mouse keys
-listed in the configuration. Its output waits until key release or the next
-key press, which may feel different during fast typing. The movement and
-scroll speeds approximate the original Karabiner
-behavior; Kanata uses different units.
+When the service runs, mouse controls work only while D is held. Release D to
+type normally, including in text fields. A quick D still types the letter;
+its 250 ms hold threshold avoids taking over fast D-led typing. The bar button
+enables or disables the service.
+The movement and scroll speeds approximate the original Karabiner behavior;
+Kanata uses different units.
 
 ## Install
 

@@ -49,9 +49,9 @@ Repeat `--device` to include more than one keyboard. Once the service is
 installed, the widget can stop or start it without elevated privileges.
 
 The installer targets an Omarchy desktop with systemd, udev, Polkit or sudo,
-Python 3, `git`, `rust` (`/usr/bin/cargo` and `/usr/bin/rustc`), and `setfacl`
-(Arch package `acl`). It builds Kanata 1.12.0 from a pinned source commit if
-that version is not already at `~/.local/bin/kanata`. The build uses
+Python 3, `git`, and `rust` (`/usr/bin/cargo` and `/usr/bin/rustc`). It builds
+Kanata 1.12.0 from a pinned source commit if that version is not already at
+`~/.local/bin/kanata`. The build uses
 `--no-default-features`, which omits Kanata's command action.
 
 To inspect the generated Kanata configuration and udev rule first, add
@@ -61,9 +61,13 @@ system state.
 The installer checks that the requested keyboard is connected, validates the
 Kanata config and systemd unit, and refuses to overwrite a different existing
 file. It installs a user service and a udev rule that grants the active desktop
-user access only to the selected keyboard devices. A system authentication
-prompt is expected for that rule. The service starts with the graphical
-session. If you plug in a selected keyboard later, Kanata matches it by name.
+user access only to the selected keyboard devices. The rule runs before
+systemd applies seat ACLs, so access follows the active desktop user. The
+installer reprocesses connected selected keyboards and removes its old
+`90-kanata-mouse-keys-uaccess.rules` rule if that file is unchanged. A system
+authentication prompt is expected for the rule. The service starts with the
+graphical session. If you plug in a selected keyboard later, Kanata matches it
+by name.
 
 ## Check
 
@@ -85,7 +89,7 @@ restarts on failure, so a successful emergency exit leaves it stopped.
 To remove the installed files after disabling the service, review and delete
 `~/.config/kanata/mouse-keys.kbd`,
 `~/.config/systemd/user/kanata-mouse-keys.service`, and
-`/etc/udev/rules.d/90-kanata-mouse-keys-uaccess.rules`, then run
+`/etc/udev/rules.d/72-kanata-mouse-keys-uaccess.rules`, then run
 `sudo udevadm control --reload-rules` and
 `systemctl --user daemon-reload`. The compiled Kanata binary can remain if
 another configuration uses it.

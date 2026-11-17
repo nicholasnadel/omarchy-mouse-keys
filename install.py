@@ -4,7 +4,6 @@
 import argparse
 import os
 from pathlib import Path
-import pwd
 import shutil
 import subprocess
 import sys
@@ -15,7 +14,9 @@ ROOT = Path(__file__).resolve().parent
 HOME = Path.home()
 CONFIG = HOME / ".config/kanata/mouse-keys.kbd"
 SERVICE = HOME / ".config/systemd/user/kanata-mouse-keys.service"
-RULE = Path("/etc/udev/rules.d/90-kanata-mouse-keys-uaccess.rules")
+# The tag must be present before systemd's 73-seat-late.rules applies seat ACLs.
+RULE = Path("/etc/udev/rules.d/72-kanata-mouse-keys-uaccess.rules")
+LEGACY_RULE = Path("/etc/udev/rules.d/90-kanata-mouse-keys-uaccess.rules")
 BINARY = HOME / ".local/bin/kanata"
 VERSION = "1.12.0"
 COMMIT = "02242ef761ef43b860eac30067ce86904be7d466"
@@ -155,7 +156,8 @@ def main():
     missing = set(names) - set(devices)
     if missing:
         raise RuntimeError(f"Keyboard not connected: {', '.join(sorted(missing))}")
-    for target, content in ((CONFIG, config), (SERVICE, service), (RULE, rule)):
+    for target, content in ((CONFIG, config), (SERVICE, service),
+                            (RULE, rule), (LEGACY_RULE, rule)):
         refuse_different(target, content)
 
     ensure_binary()
@@ -171,12 +173,14 @@ def main():
         write_file(CONFIG, config)
         write_file(SERVICE, service)
         run(privilege, "/usr/bin/install", "-Dm644", str(rule_candidate), str(RULE))
+        if LEGACY_RULE.exists():
+            run(privilege, "/usr/bin/rm", "--", str(LEGACY_RULE))
         run(privilege, "/usr/bin/udevadm", "control", "--reload-rules")
-        username = pwd.getpwuid(os.getuid()).pw_name
         for name in names:
             for node in devices[name]:
-                run(privilege, "/usr/bin/setfacl", "-m",
-                    f"u:{username}:rw", str(node))
+                run(privilege, "/usr/bin/udevadm", "trigger", "--action=change",
+                    "--settle", "--subsystem-match=input",
+                    f"--sysname-match={node.name}")
     run("systemctl", "--user", "daemon-reload")
     run("systemctl", "--user", "enable", SERVICE.stem)
     run("systemctl", "--user", "restart", SERVICE.stem)

@@ -93,6 +93,45 @@ BarWidget {
     onPressed: root.toggle()
   }
 
+  component KeyTile: Rectangle {
+    id: tile
+    property string keyLabel: ""
+    property string actionLabel: ""
+    property bool highlighted: false
+
+    height: Style.space(44)
+    radius: Style.space(5)
+    color: highlighted ? Qt.alpha(Color.accent, 0.12)
+                       : Qt.alpha(root.foreground, 0.04)
+    border.width: 1
+    border.color: highlighted ? Color.accent
+                              : Qt.alpha(root.foreground, 0.22)
+
+    Column {
+      anchors.centerIn: parent
+      spacing: 0
+
+      Text {
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: tile.keyLabel
+        textFormat: Text.PlainText
+        color: tile.highlighted ? Color.accent : root.foreground
+        font.family: root.bar ? root.bar.fontFamily : Style.font.family
+        font.pixelSize: Style.font.body
+        font.bold: true
+      }
+
+      Text {
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: tile.actionLabel
+        textFormat: Text.PlainText
+        color: Color.muted
+        font.family: root.bar ? root.bar.fontFamily : Style.font.family
+        font.pixelSize: Style.font.caption
+      }
+    }
+  }
+
   KeyboardPanel {
     id: panel
     anchorItem: button
@@ -135,15 +174,103 @@ BarWidget {
           font.pixelSize: Style.font.body
         }
 
-        Text {
+        Row {
           width: parent.width
-          text: "Hold D briefly for mouse keys; release it to type. "
-              + "H/J/K/L move · V/B/N click · S scroll · F faster · G slower."
-          textFormat: Text.PlainText
-          wrapMode: Text.WordWrap
-          color: root.foreground
-          font.family: root.bar ? root.bar.fontFamily : Style.font.family
-          font.pixelSize: Style.font.body
+          spacing: Style.space(8)
+
+          KeyTile {
+            width: Style.space(52)
+            keyLabel: "d"
+            actionLabel: "hold"
+            highlighted: true
+          }
+
+          Text {
+            width: parent.width - Style.space(60)
+            anchors.verticalCenter: parent.verticalCenter
+            text: "Hold briefly for mouse keys. Release to type."
+            textFormat: Text.PlainText
+            wrapMode: Text.WordWrap
+            color: root.foreground
+            font.family: root.bar ? root.bar.fontFamily : Style.font.family
+            font.pixelSize: Style.font.bodySmall
+          }
+        }
+
+        Rectangle {
+          width: parent.width
+          implicitHeight: keyMap.implicitHeight + Style.space(16)
+          radius: Style.space(5)
+          color: Qt.alpha(root.foreground, 0.03)
+          border.width: 1
+          border.color: Qt.alpha(root.foreground, 0.17)
+
+          Column {
+            id: keyMap
+            width: parent.width - Style.space(16)
+            anchors.centerIn: parent
+            spacing: Style.space(6)
+
+            Text {
+              text: "MOVE"
+              textFormat: Text.PlainText
+              color: Color.muted
+              font.family: root.bar ? root.bar.fontFamily : Style.font.family
+              font.pixelSize: Style.font.caption
+              font.bold: true
+            }
+
+            Row {
+              width: parent.width
+              spacing: Style.space(6)
+              KeyTile { width: (parent.width - 3 * parent.spacing) / 4; keyLabel: "h"; actionLabel: "←" }
+              KeyTile { width: (parent.width - 3 * parent.spacing) / 4; keyLabel: "j"; actionLabel: "↓" }
+              KeyTile { width: (parent.width - 3 * parent.spacing) / 4; keyLabel: "k"; actionLabel: "↑" }
+              KeyTile { width: (parent.width - 3 * parent.spacing) / 4; keyLabel: "l"; actionLabel: "→" }
+            }
+
+            Text {
+              text: "CLICK"
+              textFormat: Text.PlainText
+              color: Color.muted
+              font.family: root.bar ? root.bar.fontFamily : Style.font.family
+              font.pixelSize: Style.font.caption
+              font.bold: true
+            }
+
+            Row {
+              width: parent.width
+              spacing: Style.space(6)
+              KeyTile { width: (parent.width - 2 * parent.spacing) / 3; keyLabel: "v"; actionLabel: "left" }
+              KeyTile { width: (parent.width - 2 * parent.spacing) / 3; keyLabel: "b"; actionLabel: "right" }
+              KeyTile { width: (parent.width - 2 * parent.spacing) / 3; keyLabel: "n"; actionLabel: "middle" }
+            }
+
+            Text {
+              text: "ADJUST"
+              textFormat: Text.PlainText
+              color: Color.muted
+              font.family: root.bar ? root.bar.fontFamily : Style.font.family
+              font.pixelSize: Style.font.caption
+              font.bold: true
+            }
+
+            Row {
+              width: parent.width
+              spacing: Style.space(6)
+              KeyTile { width: (parent.width - 2 * parent.spacing) / 3; keyLabel: "s"; actionLabel: "scroll" }
+              KeyTile { width: (parent.width - 2 * parent.spacing) / 3; keyLabel: "f"; actionLabel: "faster" }
+              KeyTile { width: (parent.width - 2 * parent.spacing) / 3; keyLabel: "g"; actionLabel: "slower" }
+            }
+
+            Text {
+              text: "hold s with h/j/k/l to scroll"
+              textFormat: Text.PlainText
+              color: Color.muted
+              font.family: root.bar ? root.bar.fontFamily : Style.font.family
+              font.pixelSize: Style.font.caption
+            }
+          }
         }
 
         Button {

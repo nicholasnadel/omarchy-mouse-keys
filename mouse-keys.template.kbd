@@ -33,16 +33,11 @@
   _ _ _ _ _ _ _ _ _ _ _
 )
 
+;; S is a held no-op trigger, so releasing D cannot leave a scroll layer active.
 (deflayer dmouse
-  _ XX _ @left @down @up @right mlft mrgt mmid
-  (layer-while-held mouse-scroll) (movemouse-speed 380) (movemouse-speed 50)
-  _ _ _ _ _ _ _ _ _ _ _ _ _ _
-  _ _ _ _ _ _ _ _ _ _
-  _ _ _ _ _ _ _ _ _ _ _
-)
-
-(deflayer mouse-scroll
-  _ _ _ @scroll-left @scroll-down @scroll-up @scroll-right _ _ _ _ _ _
+  _ XX _ (fork @left @scroll-left (nop0)) (fork @down @scroll-down (nop0))
+  (fork @up @scroll-up (nop0)) (fork @right @scroll-right (nop0)) mlft mrgt mmid
+  nop0 (movemouse-speed 380) (movemouse-speed 50)
   _ _ _ _ _ _ _ _ _ _ _ _ _ _
   _ _ _ _ _ _ _ _ _ _
   _ _ _ _ _ _ _ _ _ _ _

@@ -94,6 +94,10 @@ To remove the installed files after disabling the service, review and delete
 `systemctl --user daemon-reload`. The compiled Kanata binary can remain if
 another configuration uses it.
 
+Reboot before switching users after removing the rule. Reloading udev rules
+does not clear an ACL already granted on a connected keyboard; a reboot
+recreates its device node without this plugin's access rule.
+
 Then remove the bar widget with:
 
 ```sh

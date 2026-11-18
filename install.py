@@ -52,7 +52,7 @@ def keyboard_devices():
 def validate_names(names):
     for name in names:
         # udev matches ATTRS values as patterns, so reject glob characters too.
-        if not name or any(ch in name for ch in ('"', "\\", "\n", "\r", "*", "?", "[", "]")):
+        if not name or any(ch in name for ch in ('"', "\\", "\n", "\r", "*", "?", "[", "]", "|")):
             raise ValueError(f"Unsupported device name: {name!r}")
         if any(ord(ch) < 32 for ch in name):
             raise ValueError(f"Unsupported control character in device name: {name!r}")
